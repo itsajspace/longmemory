@@ -13,7 +13,7 @@ export default function ChatbotComparison() {
   ]
 
   const messagesOn = [
-    { role: 'Q', text: 'What did we do last summer?' },
+    { role: 'Q', text: 'What did I do last summer?' },
     { role: 'A', text: 'You learned to ride a jet ski, went to NYC with friends, and joined a 2AM rooftop party on May 15th.' }
   ]
 
@@ -71,7 +71,7 @@ export default function ChatbotComparison() {
                 'linear-gradient(180deg, rgba(34,211,238,0.25) 0%, rgba(34,211,238,0.1) 100%)',
             }}
           >
-            Tokens Consumed: {longMemory ? '~2k' : '~128k'}
+            Tokens Consumed: {longMemory ? '~2k' : '~128k+'}
           </div>
 
           {longMemory && (
