@@ -63,23 +63,23 @@ export default function ChatbotComparison() {
         </div>
 
         {/* Token usage + latency indicators */}
-        <div className="absolute top-6 right-6 flex items-center gap-3">
+        <div className="absolute top-5 right-5 flex items-center gap-3">
           <div
-            className="px-4 py-2 rounded-full text-sm text-cyan-300 font-medium backdrop-blur-xl border border-cyan-400/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),0_0_12px_rgba(34,211,238,0.4)]"
+            className="px-3.5 py-1.5 rounded-full text-sm text-cyan-300 font-medium backdrop-blur-md border border-cyan-400/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.14),0_0_10px_rgba(34,211,238,0.32)]"
             style={{
               background:
-                'linear-gradient(180deg, rgba(34,211,238,0.25) 0%, rgba(34,211,238,0.1) 100%)',
+                'linear-gradient(180deg, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 100%)',
             }}
           >
-            Tokens Consumed: {longMemory ? '~2k' : '~128k+'}
+            Tokens: {longMemory ? '~2k' : '~128k+'}
           </div>
 
           {longMemory && (
             <div
-              className="px-4 py-2 rounded-full text-sm text-cyan-300 font-medium backdrop-blur-xl border border-cyan-400/30 shadow-[inset_0_1px_2px_rgba(255,255,255,0.2),0_0_12px_rgba(34,211,238,0.4)]"
+              className="px-3.5 py-1.5 rounded-full text-sm text-cyan-300 font-medium backdrop-blur-md border border-cyan-400/30 shadow-[inset_0_1px_1px_rgba(255,255,255,0.14),0_0_10px_rgba(34,211,238,0.32)]"
               style={{
                 background:
-                  'linear-gradient(180deg, rgba(34,211,238,0.25) 0%, rgba(34,211,238,0.1) 100%)',
+                  'linear-gradient(180deg, rgba(34,211,238,0.22) 0%, rgba(34,211,238,0.08) 100%)',
               }}
             >
               ~500 ms

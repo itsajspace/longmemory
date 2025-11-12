@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Layers, Plug, KeyRound, Database, HardDrive } from 'lucide-react'
+import { Layers, Plug, KeyRound, Database, HardDrive, Zap } from 'lucide-react'
 import VoiceMemoryIllustration from './VoiceMemoryIllustration'
 
 export default function LongMemoryLanding() {
@@ -37,10 +37,42 @@ export default function LongMemoryLanding() {
         </motion.div>
       </section>
 
-      {/* Illustration Section */}
-      <div className="max-w-5xl w-full flex justify-center">
-        <VoiceMemoryIllustration />
-      </div>
+      {/* Temporal Memory + Voice Demo Section */}
+  <section className="max-w-7xl w-full grid md:grid-cols-2 items-center gap-16 md:gap-20 px-4 md:px-0">
+        {/* Text Section */}
+        <motion.div
+          className="space-y-6 text-center md:text-left"
+          initial={{ opacity: 0, x: -25 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4, duration: 1 }}
+        >
+          <div className="flex items-center justify-center md:justify-start gap-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
+              Temporal
+            </h2>
+            <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+              <Zap className="w-10 h-10 text-cyan-400 ml-2" />
+            </motion.div>
+          </div>
+          <p className="text-base md:text-lg text-gray-400 max-w-md md:max-w-lg leading-relaxed">
+            Get <span className="text-white font-medium">detailed context from any point in time</span> — without losing details.
+            Retrieve conversations or compressed summaries instantly, exactly as they happened.
+          </p>
+          <div className="h-px w-20 bg-gray-700 md:ml-0 mx-auto rounded-full" />
+        </motion.div>
+
+        {/* Voice Memory Illustration */}
+        <motion.div
+          className="flex justify-center md:justify-end"
+          initial={{ opacity: 0, x: 25 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6, duration: 1 }}
+        >
+          <div className="w-full max-w-[640px]">
+            <VoiceMemoryIllustration />
+          </div>
+        </motion.div>
+      </section>
 
       {/* Why It Matters Section */}
       <section className="max-w-3xl text-center space-y-6">
@@ -56,7 +88,7 @@ export default function LongMemoryLanding() {
           <CardContent className="p-10 space-y-3">
             <div className="flex items-center gap-4 mb-4">
               <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-                <HardDrive className="w-9 h-9 text-gray-200" />
+                <HardDrive className="w-10 h-10 text-cyan-400" />
               </motion.div>
               <h2 className="text-3xl font-bold text-white">Lossless Memory</h2>
             </div>
@@ -71,7 +103,7 @@ export default function LongMemoryLanding() {
           <CardContent className="p-10 space-y-3">
             <div className="flex items-center gap-4 mb-4">
               <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-                <Database className="w-9 h-9 text-gray-200" />
+                <Database className="w-10 h-10 text-cyan-400" />
               </motion.div>
               <h2 className="text-3xl font-bold text-white">Intelligent Memory</h2>
             </div>
@@ -89,7 +121,7 @@ export default function LongMemoryLanding() {
         <div className="grid md:grid-cols-3 gap-10 mt-6">
           <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
             <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-              <Plug className="w-10 h-10 text-gray-300" />
+              <Plug className="w-10 h-10 text-cyan-400" />
             </motion.div>
             <h3 className="text-xl font-semibold mb-2 text-white">Plug & Play API</h3>
             <p className="text-gray-400 text-sm leading-relaxed">Call our API with your key — LongMemory handles context automatically.</p>
@@ -97,7 +129,7 @@ export default function LongMemoryLanding() {
 
           <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
             <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-              <KeyRound className="w-10 h-10 text-gray-300" />
+              <KeyRound className="w-10 h-10 text-cyan-400" />
             </motion.div>
             <h3 className="text-xl font-semibold mb-2 text-white">BYOK Integration</h3>
             <p className="text-gray-400 text-sm leading-relaxed">Bring your own key (BYOK) — connect your AI provider, and we handle memory seamlessly.</p>
@@ -105,7 +137,7 @@ export default function LongMemoryLanding() {
 
           <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
             <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
-              <Layers className="w-10 h-10 text-gray-300" />
+              <Layers className="w-10 h-10 text-cyan-400" />
             </motion.div>
             <h3 className="text-xl font-semibold mb-2 text-white">Unified Memory</h3>
             <p className="text-gray-400 text-sm leading-relaxed">Consistent context and temporal recall across every model and use case.</p>
@@ -120,7 +152,7 @@ export default function LongMemoryLanding() {
           LongMemory.io ensures your AI always stays aware of past interactions. Whether text or voice, your assistant never forgets context.
         </p>
         <motion.div className="flex justify-center my-8" animate={{ y: [0, -10, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-          <Database className="w-10 h-10 text-gray-300" />
+          <Database className="w-10 h-10 text-cyan-400" />
         </motion.div>
         <p className="text-sm text-gray-500">A temporal memory for your AI agents.</p>
       </section>
