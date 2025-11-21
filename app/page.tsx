@@ -1,202 +1,341 @@
 'use client'
 
+import { useState } from 'react'
+import Link from 'next/link' 
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Layers, Plug, KeyRound, Database, HardDrive, Zap } from 'lucide-react'
-import VoiceMemoryIllustration from './VoiceMemoryIllustration'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Textarea } from '@/components/ui/textarea'
+import { Loader2, ChevronRight, KeyRound, ToggleRight, Cpu, TrendingDown } from 'lucide-react'
+// 1. Import Toaster
+import { toast, Toaster } from 'sonner'
+
+// Import Illustrations & New Components
+import TemporalIllustration from './TemporalIllustration'
+import PreferenceIllustration from './PreferenceIllustration'
+import MiddlewareCode from './MiddlewareCode'
+import aws from './../public/aws.png'
+import thub from './../public/aic-thub.png'
 
 export default function LongMemoryLanding() {
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [termsError, setTermsError] = useState(false) // New state for visual validation
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    company: '',
+    useCase: '',
+    agree: false,
+  })
+
+  const handleSubmit = async () => {
+    // Reset error state
+    setTermsError(false)
+
+    if (!formData.agree) {
+      // 2. Show Toast AND Visual Error
+      toast.error('Please accept the Terms & Privacy Policy to continue.')
+      setTermsError(true)
+      return
+    }
+
+    if (!formData.name || !formData.email) {
+        toast.error('Please fill in your name and email.')
+        return
+    }
+
+    setLoading(true)
+    try {
+      const res = await fetch('https://api.longmemory.io/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      
+      if (res.ok) {
+        toast.success('Welcome aboard!', { 
+            description: 'You have been added to the priority waitlist.' 
+        })
+        setOpen(false)
+        setFormData({ name: '', email: '', company: '', useCase: '', agree: false })
+      } else {
+        const data = await res.json().catch(() => ({}))
+        toast.error(data.message || 'Submission failed. Please try again.')
+      }
+    } catch (err) {
+      toast.error('Network error. Please check your connection.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-6 md:px-10 py-20 space-y-32 overflow-hidden">
-      {/* Hero Section */}
-      <section className="text-center max-w-3xl space-y-8">
-        <motion.h1
-          className="text-6xl md:text-7xl font-extrabold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent leading-tight"
-          initial={{ opacity: 0, y: -35 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          LongMemory.io
-        </motion.h1>
+    <div className="min-h-screen bg-[#020204] text-white selection:bg-cyan-500/30 flex flex-col items-center overflow-x-hidden font-sans">
+      
+      {/* 3. Add the Toaster Component here so notifications can appear */}
+      <Toaster position="top-center" richColors theme="dark" />
 
-        <p className="text-lg md:text-xl text-gray-400 leading-relaxed">
-          The unified memory layer for all your AI models. Retrieves just the essential context in milliseconds, cutting cost and latency without losing meaning.
-        </p>
+      {/* --- BACKGROUND GLOW --- */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-cyan-600/15 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-blue-900/10 blur-[120px] rounded-full mix-blend-screen" />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_60%_at_50%_50%,#000_10%,transparent_100%)]"></div>
+      </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 1 }}
-          className="space-y-2"
-        >
-          <p className="text-sm uppercase tracking-widest text-cyan-400">Coming Soon</p>
-          <Button className="bg-white/95 text-black font-medium px-10 py-4 rounded-full shadow-md hover:bg-white transition-all duration-300">
-            Get Early Access
-          </Button>
-        </motion.div>
-      </section>
+      <main className="z-10 w-full flex flex-col items-center">
 
-      {/* Temporal Memory + Voice Demo Section */}
-  <section className="max-w-7xl w-full grid md:grid-cols-2 items-center gap-16 md:gap-20 px-4 md:px-0">
-        {/* Text Section */}
-        <motion.div
-          className="space-y-6 text-center md:text-left"
-          initial={{ opacity: 0, x: -25 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.4, duration: 1 }}
-        >
-          <div className="flex items-center justify-center md:justify-start gap-4">
-            <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-              Temporal
-            </h2>
-            <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-              <Zap className="w-10 h-10 text-cyan-400 ml-2" />
-            </motion.div>
-          </div>
-          <p className="text-base md:text-lg text-gray-400 max-w-md md:max-w-lg leading-relaxed">
-            Get <span className="text-white font-medium">detailed context from any point in time</span> — without losing details.
-            Retrieve conversations or compressed summaries instantly, exactly as they happened.
-          </p>
-          <div className="h-px w-20 bg-gray-700 md:ml-0 mx-auto rounded-full" />
-        </motion.div>
+        {/* --- HERO SECTION --- */}
+        <section className="w-full flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center max-w-5xl space-y-8">
 
-        {/* Voice Memory Illustration */}
-        <motion.div
-          className="flex justify-center md:justify-end"
-          initial={{ opacity: 0, x: 25 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6, duration: 1 }}
-        >
-          <div className="w-full max-w-[640px]">
-            <VoiceMemoryIllustration />
-          </div>
-        </motion.div>
-      </section>
+          {/* Safer "Efficiency" Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-bold uppercase tracking-widest"
+          >
+            <TrendingDown className="w-3 h-3" />
+            <span>Dramatically Lower Token Costs</span>
+          </motion.div>
 
-      {/* Why It Matters Section */}
-      <section className="max-w-3xl text-center space-y-6">
-        <h2 className="text-4xl font-semibold text-gray-200">Why Memory Matters</h2>
-        <p className="text-gray-400 text-base leading-relaxed">
-          AI models lose understanding after every query, forcing developers to resend full context — wasting tokens, time, and cost. LongMemory.io automates context handling and adds temporal memory for true long-term recall.
-        </p>
-      </section>
+          <motion.h1
+            className="text-6xl md:text-8xl lg:text-9xl font-extrabold tracking-tighter leading-[1.05]"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="bg-gradient-to-b from-white to-gray-400 bg-clip-text text-transparent">
+              Looooooogest
+            </span>
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+              Memory for AI.
+            </span>
+          </motion.h1>
 
-      {/* Features Section */}
-      <section className="max-w-6xl w-full grid md:grid-cols-2 gap-10">
-        <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 shadow-lg hover:shadow-gray-700/40 transition-all duration-500">
-          <CardContent className="p-10 space-y-3">
-            <div className="flex items-center gap-4 mb-4">
-              <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-                <HardDrive className="w-10 h-10 text-cyan-400" />
-              </motion.div>
-              <h2 className="text-3xl font-bold text-white">Lossless Memory</h2>
+          <motion.p
+            className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            The infinite memory layer for your AI.
+            <span className="text-white font-medium"> Stop stuffing context windows.</span> Retrieve only the essential context instantly, keeping your agents <span className="text-cyan-400">fast and efficient</span>.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 1 }}
+            className="pt-6"
+          >
+            <Button
+              onClick={() => setOpen(true)}
+              className="h-14 px-8 rounded-full bg-white text-black hover:bg-cyan-50 text-lg font-bold transition-all duration-300 shadow-[0_0_30px_rgba(255,255,255,0.2)] hover:shadow-[0_0_50px_rgba(34,211,238,0.4)]"
+            >
+              Get Early Access 
+            </Button>
+          </motion.div>
+        </section>
+
+        {/* --- FEATURE GRID --- */}
+        <section className="w-full py-16 px-6 border-t border-zinc-900 bg-[#040404]">
+          <div className="max-w-6xl mx-auto">
+            <div className="text-center mb-12 space-y-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Why add a Memory Layer?</h2>
+              <p className="text-gray-400 text-lg">Plug and play. Bring Your Own Key (BYOK). Switch models instantly.</p>
             </div>
-            <p className="text-gray-400 text-base">
-              Choose lossless for precise, uncompressed context with near-zero hallucinations — even from years-old interactions in milliseconds.
-            </p>
-            <p className="text-sm text-gray-500">Faster, accurate retrieval for deep reasoning and long-term knowledge retention.</p>
-          </CardContent>
-        </Card>
 
-        <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 shadow-lg hover:shadow-gray-700/40 transition-all duration-500">
-          <CardContent className="p-10 space-y-3">
-            <div className="flex items-center gap-4 mb-4">
-              <motion.div animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-                <Database className="w-10 h-10 text-cyan-400" />
-              </motion.div>
-              <h2 className="text-3xl font-bold text-white">Intelligent Memory</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-green-500/50 transition-all group">
+                <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-green-500/20 group-hover:text-green-400 transition-all">
+                  <TrendingDown className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Massive Cost Reduction</h3>
+                <p className="text-gray-400 leading-relaxed text-sm">
+                  Don't send the full conversation history every time. We retrieve only the most relevant memories, significantly slashing your input token costs.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-cyan-500/50 transition-all group">
+                <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 group-hover:text-cyan-400 transition-all">
+                  <KeyRound className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Managed Security</h3>
+                <p className="text-gray-400 leading-relaxed text-sm">
+                  <strong>Add keys once in our dashboard.</strong> Never expose your OpenAI or Anthropic keys in your client-side code again.
+                </p>
+              </div>
+
+              <div className="p-6 rounded-3xl bg-zinc-900/50 border border-zinc-800 hover:border-cyan-500/50 transition-all group">
+                <div className="w-10 h-10 rounded-xl bg-zinc-800 flex items-center justify-center mb-4 group-hover:bg-cyan-500/20 group-hover:text-cyan-400 transition-all">
+                  <ToggleRight className="w-5 h-5" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">Model Swapping</h3>
+                <p className="text-gray-400 leading-relaxed text-sm">
+                  Switching from OpenAI to Anthropic? Just change the provider in your dashboard. No code changes required.
+                </p>
+              </div>
             </div>
-            <p className="text-gray-400 text-base">
-              Choose Intelligent Memory for compressed context reducing the tokens by upto 90% saving inference costs dramatically.
+          </div>
+        </section>
+
+        {/* --- EXAMPLE 1: TEMPORAL RECALL --- */}
+        <section className="w-full py-20 px-6 bg-black/50 border-t border-zinc-900">
+          <div className="max-w-7xl mx-auto space-y-8">
+            <div className="text-center space-y-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-white">Super Fast Temporal Recall</h2>
+              <p className="text-gray-400 text-base max-w-2xl mx-auto">
+                Most AIs live in the "now". LongMemory gives them a timeline. We retrieve the exact memory from last week, last month, or last year in <span className="text-cyan-400 font-mono">real-time</span>.
+              </p>
+            </div>
+            <TemporalIllustration />
+          </div>
+        </section>
+
+        {/* --- EXAMPLE 2: PREFERENCES --- */}
+        <section className="w-full py-24 px-6 border-t border-zinc-900 relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-cyan-950/5 to-black pointer-events-none" />
+          <div className="max-w-7xl mx-auto relative z-10">
+            <PreferenceIllustration />
+          </div>
+        </section>
+
+        {/* --- MIDDLEWARE MAGIC (CODE) --- */}
+        <section className="w-full py-20 px-6 border-t border-zinc-900 bg-[#050505]">
+          <div className="max-w-5xl mx-auto space-y-12">
+            <div className="text-center space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/30 border border-cyan-500/30 text-cyan-400 text-[10px] font-mono mb-2">
+                <Cpu className="w-3 h-3" /> DEVELOPER EXPERIENCE
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-white">Middleware Magic</h2>
+              <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+                Two lines of code. We handle the Vector DB, RAG pipeline, and LLM routing for you.
+              </p>
+            </div>
+            <MiddlewareCode />
+          </div>
+        </section>
+
+        {/* --- NEW: BACKED BY SECTION --- */}
+        <section className="w-full py-16 border-t border-zinc-900 bg-black/80">
+          <div className="max-w-6xl mx-auto px-6">
+            <p className="text-center text-white text-xs font-bold uppercase tracking-[0.2em] mb-10">
+              Supported & Incubated By
             </p>
-            <p className="text-sm text-gray-500">Perfect for real-time AI agents and scalable enterprise workloads.</p>
-          </CardContent>
-        </Card>
-      </section>
 
-      {/* Unified Layer Section */}
-      <section className="max-w-6xl w-full text-center space-y-8">
-        <h2 className="text-4xl font-semibold text-gray-200">A Universal Memory Layer for All Models</h2>
-        <div className="grid md:grid-cols-3 gap-10 mt-6">
-          <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
-            <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-              <Plug className="w-10 h-10 text-cyan-400" />
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-90 transition-all duration-700">
+
+              {/* AIC T-HUB */}
+              <img
+                src={thub.src}
+                alt="AIC T-Hub"
+                className="h-12 w-auto object-contain brightness-0 invert"
+              />
+
+              {/* AWS ACTIVATE */}
+              <img
+                src={aws.src}
+                alt="AWS Activate"
+                className="h-18 w-auto object-contain  brightness-0 invert "
+              />
+
+              {/* MICROSOFT FOR STARTUPS */}
+              <div className="flex items-center gap-3 group">
+                <div className="flex flex-col leading-none brightness-0 invert">
+                  <span className="text-lg font-semibold text-white">Microsoft</span>
+                  <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">for Startups</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
+        {/* --- FOOTER --- */}
+        <footer className="w-full py-8 border-t border-zinc-900 bg-black text-center">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-zinc-600 text-xs">
+            <p>© {new Date().getFullYear()} www.LongMemory.io. All rights reserved.</p>
+            <div className="flex gap-6">
+              <Link href="/terms" className="hover:text-cyan-400 transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/privacy" className="hover:text-cyan-400 transition-colors">
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </footer>
+
+      </main>
+
+      {/* --- WAITLIST DIALOG --- */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md bg-[#0a0a0a] text-white border border-zinc-800 shadow-2xl shadow-cyan-900/20">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-white">Join the waitlist</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-1">
+              <Label className="text-white text-[10px] uppercase tracking-wider">Full Name</Label>
+              <Input
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="bg-zinc-900 border-zinc-800 text-white h-9 focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-white text-[10px] uppercase tracking-wider">Work Email</Label>
+              <Input
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="bg-zinc-900 border-zinc-800 text-white h-9 focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+            <div className="space-y-1">
+              <Label className="text-white text-[10px] uppercase tracking-wider">Project Details</Label>
+              <Textarea
+                value={formData.useCase}
+                onChange={(e) => setFormData({ ...formData, useCase: e.target.value })}
+                placeholder="I am building..."
+                className="bg-zinc-900 border-zinc-800 text-white min-h-[60px] focus:border-cyan-500 focus:ring-cyan-500"
+              />
+            </div>
+            
+            {/* --- CHECKBOX WITH VISUAL ERROR STATE --- */}
+            <motion.div 
+              className={`flex items-center space-x-2 pt-1 rounded p-1 transition-colors ${termsError ? 'bg-red-900/20 border border-red-900/50' : ''}`}
+              animate={termsError ? { x: [-5, 5, -5, 5, 0] } : {}} // Shake effect
+            >
+              <Checkbox
+                id="agree"
+                checked={formData.agree}
+                onCheckedChange={(c) => {
+                    setFormData({ ...formData, agree: c as boolean })
+                    if(c) setTermsError(false)
+                }}
+                className={`border-zinc-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:text-black h-4 w-4 ${termsError ? 'border-red-500' : ''}`}
+              />
+              
+              <label htmlFor="agree" className={`text-[10px] cursor-pointer select-none ${termsError ? 'text-red-400 font-medium' : 'text-zinc-400'}`}>
+                I agree to the <Link href="/terms" target="_blank" className="underline hover:text-cyan-400">Terms</Link> & <Link href="/privacy" target="_blank" className="underline hover:text-cyan-400">Privacy Policy</Link>
+              </label>
             </motion.div>
-            <h3 className="text-xl font-semibold mb-2 text-white">Plug & Play API</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">Call our API with your key — LongMemory handles context automatically.</p>
-          </Card>
 
-          <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
-            <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}>
-              <KeyRound className="w-10 h-10 text-cyan-400" />
-            </motion.div>
-            <h3 className="text-xl font-semibold mb-2 text-white">BYOK Integration</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">Bring your own key (BYOK) — connect your AI provider, and we handle memory seamlessly.</p>
-          </Card>
-
-          <Card className="bg-gradient-to-b from-gray-950 to-black border border-gray-800 p-8 hover:shadow-gray-700/20 transition-all duration-500">
-            <motion.div className="flex justify-center mb-5" animate={{ y: [0, -6, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}>
-              <Layers className="w-10 h-10 text-cyan-400" />
-            </motion.div>
-            <h3 className="text-xl font-semibold mb-2 text-white">Unified Memory</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">Consistent context and temporal recall across every model and use case.</p>
-          </Card>
-        </div>
-      </section>
-
-      {/* Data Flow Section */}
-      <section className="max-w-5xl text-center space-y-8">
-        <h2 className="text-4xl font-bold text-gray-100">Seamless Flow Between You and the AI</h2>
-        <p className="text-gray-400 max-w-3xl mx-auto text-base leading-relaxed">
-          LongMemory.io ensures your AI always stays aware of past interactions. Whether text or voice, your assistant never forgets context.
-        </p>
-        <motion.div className="flex justify-center my-8" animate={{ y: [0, -10, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-          <Database className="w-10 h-10 text-cyan-400" />
-        </motion.div>
-        <p className="text-sm text-gray-500">A temporal memory for your AI agents.</p>
-      </section>
-
-      {/* Backed By Section (Bottom) */}
-      {/* <section className="w-full text-center space-y-6 mt-20">
-        <motion.h3
-          className="text-sm uppercase tracking-widest text-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8 }}
-        >
-          Backed By
-        </motion.h3>
-        <motion.div
-          className="flex flex-wrap justify-center items-center gap-10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 1 }}
-        >
-          <img
-            src="/logos/thub.png"
-            alt="T-Hub"
-            className="h-10 md:h-12 opacity-90 hover:opacity-100 transition-all"
-          />
-          <img
-            src="/logos/aws.png"
-            alt="AWS"
-            className="h-8 md:h-10 opacity-90 hover:opacity-100 transition-all"
-          />
-          <img
-            src="/logos/microsoft.png"
-            alt="Microsoft for Startups"
-            className="h-9 md:h-11 opacity-90 hover:opacity-100 transition-all"
-          />
-        </motion.div>
-      </section> */}
-
-      {/* Footer */}
-      <footer className="pt-16 text-gray-600 text-sm text-center border-t border-gray-800 w-full">
-        <p className="text-gray-500 max-w-3xl mx-auto leading-relaxed">
-          Empowering AI to think, speak, and remember like humans — across voice and text.
-        </p>
-      </footer>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setOpen(false)} className="text-zinc-400 hover:text-white h-9 text-sm">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} disabled={loading} className="bg-cyan-500 hover:bg-cyan-400 text-white font-bold h-9 text-sm">
+              {loading ? <Loader2 className="mr-2 h-3 w-3 animate-spin" /> : 'Submit'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
