@@ -213,7 +213,7 @@ export default function LongMemoryLanding() {
               </div>
               <h2 className="text-3xl md:text-5xl font-bold text-white">Middleware Magic</h2>
               <p className="text-gray-400 text-lg max-w-2xl mx-auto">
-                Two lines of code. We handle the Vector DB, RAG pipeline, and LLM routing for you.
+                Two lines of code. We handle context retrieval and LLM routing for you.
               </p>
             </div>
             <MiddlewareCode />
