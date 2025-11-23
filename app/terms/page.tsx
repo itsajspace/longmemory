@@ -16,7 +16,7 @@ export default function Terms() {
         </Link>
 
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Terms of Service</h1>
-        <p className="text-zinc-500 mb-12">Last Updated: November 20, 2025</p>
+        <p className="text-zinc-500 mb-12">Last Updated: November 23, 2025</p>
 
         <div className="space-y-10 text-sm md:text-base leading-relaxed">
             
@@ -72,7 +72,7 @@ export default function Terms() {
                     </ul>
                     <br/>
                     <span className="text-zinc-500 text-xs">
-                        (If you have not paid us anything, our liability is limited to zero or ₹100).
+                        (If you have not paid us anything, our liability is limited to zero rupees).
                     </span>
                 </div>
             </section>
