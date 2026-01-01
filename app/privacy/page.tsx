@@ -16,7 +16,7 @@ export default function Privacy() {
         </Link>
 
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-2">Privacy Policy</h1>
-        <p className="text-zinc-500 mb-12">Last Updated: November 21, 2025</p>
+        <p className="text-zinc-500 mb-12">Last Updated: January 1st, 2026</p>
 
         <div className="space-y-10 text-sm md:text-base leading-relaxed">
             

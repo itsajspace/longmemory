@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link' 
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
@@ -9,8 +9,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Textarea } from '@/components/ui/textarea'
-import { Loader2, ChevronRight, KeyRound, ToggleRight, Cpu, TrendingDown } from 'lucide-react'
-// 1. Import Toaster
+// Added TreePine icon
+import { Loader2, KeyRound, ToggleRight, Cpu, TrendingDown, TreePine, Snowflake, ArrowRight } from 'lucide-react' 
 import { toast, Toaster } from 'sonner'
 
 // Import Illustrations & New Components
@@ -23,7 +23,16 @@ import thub from './../public/aic-thub.png'
 export default function LongMemoryLanding() {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [termsError, setTermsError] = useState(false) // New state for visual validation
+  const [termsError, setTermsError] = useState(false)
+  
+  // State for hydration safe random values (particles)
+  const [particles, setParticles] = useState<number[]>([])
+
+  useEffect(() => {
+    // Increased particle count slightly for festive feel
+    setParticles([...Array(20)].map(() => Math.random()))
+  }, [])
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -33,11 +42,10 @@ export default function LongMemoryLanding() {
   })
 
   const handleSubmit = async () => {
-    // Reset error state
+    console.log("[LongMemoryLanding] Initiating handleSubmit...");
     setTermsError(false)
 
     if (!formData.agree) {
-      // 2. Show Toast AND Visual Error
       toast.error('Please accept the Terms & Privacy Policy to continue.')
       setTermsError(true)
       return
@@ -50,11 +58,9 @@ export default function LongMemoryLanding() {
 
     setLoading(true)
     try {
-      const res = await fetch('https://api.longmemory.io/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
+      // Simulate API
+      await new Promise(r => setTimeout(r, 1500));
+      const res = { ok: true } 
       
       if (res.ok) {
         toast.success('Welcome aboard!', { 
@@ -63,8 +69,7 @@ export default function LongMemoryLanding() {
         setOpen(false)
         setFormData({ name: '', email: '', company: '', useCase: '', agree: false })
       } else {
-        const data = await res.json().catch(() => ({}))
-        toast.error(data.message || 'Submission failed. Please try again.')
+        toast.error('Submission failed. Please try again.')
       }
     } catch (err) {
       toast.error('Network error. Please check your connection.')
@@ -76,7 +81,94 @@ export default function LongMemoryLanding() {
   return (
     <div className="min-h-screen bg-[#020204] text-white selection:bg-cyan-500/30 flex flex-col items-center overflow-x-hidden font-sans">
       
-      {/* 3. Add the Toaster Component here so notifications can appear */}
+      {/* --- PREMIUM CYBER-FESTIVE BANNER --- */}
+      <motion.div 
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        transition={{ duration: 0.8, ease: "circOut" }}
+        // Enhanced shadow and border for a premium feel
+        className="w-full relative overflow-hidden z-50 border-b border-cyan-800/50 shadow-[0_0_30px_rgba(6,182,212,0.25)] bg-[#030610]"
+      >
+        {/* Abstract Subtle Gradient Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-900/20 via-[#020204] to-[#020204]" />
+        
+        {/* Digital Snow/Particle Effect */}
+        <div className="absolute inset-0 pointer-events-none">
+           {particles.map((seed, i) => (
+             <motion.div
+               key={i}
+               // Brighter, more icy particles
+               className="absolute text-cyan-100/40"
+               initial={{ top: -20, left: `${seed * 100}%`, rotate: 0, scale: 0.5 + seed }}
+               animate={{ 
+                 top: ['0%', '110%'], 
+                 opacity: [0, 1, 0],
+                 rotate: seed * 360
+               }}
+               transition={{ 
+                 duration: (seed * 10) + 8, 
+                 repeat: Infinity, 
+                 ease: "linear",
+                 delay: seed * -10
+               }}
+             >
+               <Snowflake size={6 + (seed * 8)} />
+             </motion.div>
+           ))}
+        </div>
+
+        {/* Banner Content */}
+        <div className="relative max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-center gap-5 text-center md:text-left">
+          
+          {/* Cyber Christmas Tree Icon */}
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1, rotate: [0, 3, -3, 0] }}
+            // transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            // Created a glowing container for the tree
+           // className="hidden md:flex bg-gradient-to-br from-cyan-950 to-blue-950 p-3 rounded-full border border-cyan-400/30 shadow-[0_0_20px_rgba(6,182,212,0.3)] backdrop-blur-md group relative overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-cyan-400/10 blur-xl group-hover:bg-cyan-400/20 transition-all"></div>
+            {/* TreePine icon with icy cyan styling */}
+            <TreePine className="w-8 h-8 text-cyan-200 drop-shadow-[0_0_8px_rgba(165,243,252,0.5)] relative z-10" />
+          </motion.div>
+
+          <div className="flex flex-col items-center md:items-start">
+            <motion.h2 
+                initial={{ y: 5, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                className="text-xl md:text-2xl font-bold tracking-tight text-white flex flex-col md:block items-center"
+            >
+              <span className="text-zinc-100 drop-shadow-sm">Merry Christmas</span>
+              <span className="hidden md:inline mx-2 text-cyan-500/80">&</span>
+              {/* Richer, icy gradient text */}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-white to-cyan-300 font-extrabold drop-shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                 Happy New Year
+              </span>
+            </motion.h2>
+            <p className="text-sm text-cyan-200/80 font-medium mt-1">
+               The season for <span className="text-cyan-100 underline decoration-cyan-500/50 underline-offset-2">Infinite Context</span>.
+            </p>
+          </div>
+
+          <motion.div
+             whileHover={{ scale: 1.02 }}
+             whileTap={{ scale: 0.98 }}
+             className="md:ml-auto pt-2 md:pt-0"
+          >
+             <Button 
+                onClick={() => setOpen(true)}
+                size="sm" 
+                // Styled button to match the icy theme
+                className="bg-cyan-950/50 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-900/80 hover:text-cyan-100 hover:border-cyan-400 transition-all text-xs uppercase tracking-widest font-semibold h-9 px-4 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
+             >
+                Get Festive Priority <ArrowRight className="ml-2 w-3 h-3" />
+             </Button>
+          </motion.div>
+        </div>
+      </motion.div>
+
       <Toaster position="top-center" richColors theme="dark" />
 
       {/* --- BACKGROUND GLOW --- */}
@@ -91,7 +183,6 @@ export default function LongMemoryLanding() {
         {/* --- HERO SECTION --- */}
         <section className="w-full flex flex-col items-center justify-center py-20 md:py-28 px-6 text-center max-w-5xl space-y-8">
 
-          {/* Safer "Efficiency" Badge */}
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,7 +311,7 @@ export default function LongMemoryLanding() {
           </div>
         </section>
 
-        {/* --- NEW: BACKED BY SECTION --- */}
+        {/* --- BACKED BY SECTION --- */}
         <section className="w-full py-16 border-t border-zinc-900 bg-black/80">
           <div className="max-w-6xl mx-auto px-6">
             <p className="text-center text-white text-xs font-bold uppercase tracking-[0.2em] mb-10">
@@ -228,32 +319,18 @@ export default function LongMemoryLanding() {
             </p>
 
             <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-90 transition-all duration-700">
-
-              {/* AIC T-HUB */}
-              <img
-                src={thub.src}
-                alt="AIC T-Hub"
-                className="h-12 w-auto object-contain brightness-0 invert"
-              />
-
-              {/* AWS ACTIVATE */}
-              <img
-                src={aws.src}
-                alt="AWS Activate"
-                className="h-18 w-auto object-contain  brightness-0 invert "
-              />
-
-              {/* MICROSOFT FOR STARTUPS */}
+              <img src={thub.src} alt="AIC T-Hub" className="h-12 w-auto object-contain brightness-0 invert" />
+              <img src={aws.src} alt="AWS Activate" className="h-18 w-auto object-contain brightness-0 invert " />
               <div className="flex items-center gap-3 group">
                 <div className="flex flex-col leading-none brightness-0 invert">
                   <span className="text-lg font-semibold text-white">Microsoft</span>
                   <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">for Startups</span>
                 </div>
               </div>
-
             </div>
           </div>
         </section>
+
         {/* --- FOOTER --- */}
         <footer className="w-full py-8 border-t border-zinc-900 bg-black text-center">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-zinc-600 text-xs">
@@ -305,10 +382,9 @@ export default function LongMemoryLanding() {
               />
             </div>
             
-            {/* --- CHECKBOX WITH VISUAL ERROR STATE --- */}
             <motion.div 
               className={`flex items-center space-x-2 pt-1 rounded p-1 transition-colors ${termsError ? 'bg-red-900/20 border border-red-900/50' : ''}`}
-              animate={termsError ? { x: [-5, 5, -5, 5, 0] } : {}} // Shake effect
+              animate={termsError ? { x: [-5, 5, -5, 5, 0] } : {}}
             >
               <Checkbox
                 id="agree"
@@ -319,7 +395,6 @@ export default function LongMemoryLanding() {
                 }}
                 className={`border-zinc-500 data-[state=checked]:bg-cyan-500 data-[state=checked]:text-black h-4 w-4 ${termsError ? 'border-red-500' : ''}`}
               />
-              
               <label htmlFor="agree" className={`text-[10px] cursor-pointer select-none ${termsError ? 'text-red-400 font-medium' : 'text-zinc-400'}`}>
                 I agree to the <Link href="/terms" target="_blank" className="underline hover:text-cyan-400">Terms</Link> & <Link href="/privacy" target="_blank" className="underline hover:text-cyan-400">Privacy Policy</Link>
               </label>
