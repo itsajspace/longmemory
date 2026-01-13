@@ -311,26 +311,7 @@ export default function LongMemoryLanding() {
           </div>
         </section>
 
-        {/* --- BACKED BY SECTION --- */}
-        <section className="w-full py-16 border-t border-zinc-900 bg-black/80">
-          <div className="max-w-6xl mx-auto px-6">
-            <p className="text-center text-white text-xs font-bold uppercase tracking-[0.2em] mb-10">
-              Supported & Incubated By
-            </p>
-
-            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-90 transition-all duration-700">
-              <img src={thub.src} alt="AIC T-Hub" className="h-12 w-auto object-contain brightness-0 invert" />
-              <img src={aws.src} alt="AWS Activate" className="h-18 w-auto object-contain brightness-0 invert " />
-              <div className="flex items-center gap-3 group">
-                <div className="flex flex-col leading-none brightness-0 invert">
-                  <span className="text-lg font-semibold text-white">Microsoft</span>
-                  <span className="text-[10px] font-medium text-zinc-400 uppercase tracking-wider">for Startups</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
+       
         {/* --- FOOTER --- */}
         <footer className="w-full py-8 border-t border-zinc-900 bg-black text-center">
           <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 text-zinc-600 text-xs">
